@@ -32,7 +32,7 @@ const createUser = async (req, res) => {
 
 const getAllUser = async (req, res) => {
   try {
-    const allUsers = await UserModel.getAllUsers;
+    const allUsers = await UserModel.getAllUsers();
     return res.status(200).json({
       status: 200,
       data: allUsers,
@@ -60,8 +60,65 @@ const getOneUser = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {};
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { firstName, lastName, email, password } = req.body;
 
-const deleteUser = async (req, res) => {};
+    if (!firstName && !lastName && !email && !password) {
+      throw new Error("Pastikan semua field terisi!");
+    }
+
+    const updateUser = await UserModel.updateUsers(
+      id,
+      firstName,
+      lastName,
+      email,
+      password
+    );
+    if (!updateUser.affectedRows) {
+      throw new Error("User not Updated!");
+    }
+
+    return res.status(200).json({
+      status: 200,
+      data: {
+        id,
+        firstName,
+        lastName,
+        email,
+        password,
+      },
+    });
+  } catch (_err) {
+    return res.status(500).json({
+      status: 500,
+      message: `Internal Server Error: ${_err.message}`,
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updateUser = await UserModel.deleteUsers(id);
+    if (!updateUser.affectedRows) {
+      throw new Error("User not Updated!");
+    }
+
+    return res.status(200).json({
+      status: 200,
+      data: {
+        id,
+      },
+    });
+  } catch (_err) {
+    return res.status(500).json({
+      status: 500,
+      message: `Internal Server Error: ${_err.message}`,
+    });
+  }
+};
 
 module.exports = { createUser, getAllUser, getOneUser, updateUser, deleteUser };

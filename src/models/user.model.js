@@ -3,7 +3,7 @@ const connection = require("../db/connection");
 const createUser = async (firstName, lastName, email, password) =>
   new Promise((resolve, reject) => {
     connection.query(
-      "INSERT INTO users VALUE (?,?,?,?,?)",
+      "INSERT INTO users VALUES (?,?,?,?,?)",
       [crypto.randomUUID(), firstName, lastName, email, password],
       (_err, rows) => {
         if (_err) reject(_err);
