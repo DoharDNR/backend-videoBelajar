@@ -1,19 +1,28 @@
 const UserModel = require("../models/user.model");
+const { generatePassword, similarAccount } = require("../utils/helper.auth");
 
 const createUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { fullName, email, gender, phone, Password, profil_img } = req.body;
 
-    if (!firstName && !lastName && !email && !password) {
+    if (!fullName && !email && !Password && !gender && !phone && !profil_img) {
       throw new Error("Pastikan semuanya terisi");
     }
 
+    const allUser = await similarAccount(req.body);
+    if (allUser) throw new Error("Nama dan Email telah digunakan!");
+
+    const password = await generatePassword(Password);
+
     const createUser = await UserModel.createUser(
-      firstName,
-      lastName,
+      fullName,
       email,
-      password
+      gender,
+      phone,
+      password,
+      profil_img
     );
+
     if (!createUser.affectedRows) {
       throw new Error("Something Is Wrong");
     }
@@ -63,19 +72,22 @@ const getOneUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { firstName, lastName, email, password } = req.body;
+    const { fullName, email, password, gender, phone, profil_img } = req.body;
 
-    if (!firstName && !lastName && !email && !password) {
+    if (!fullName && !email && !password && !gender && !phone && !profil_img) {
       throw new Error("Pastikan semua field terisi!");
     }
 
     const updateUser = await UserModel.updateUsers(
       id,
-      firstName,
-      lastName,
+      fullName,
       email,
-      password
+      password,
+      gender,
+      phone,
+      profil_img
     );
+
     if (!updateUser.affectedRows) {
       throw new Error("User not Updated!");
     }
@@ -84,10 +96,12 @@ const updateUser = async (req, res) => {
       status: 200,
       data: {
         id,
-        firstName,
-        lastName,
+        fullName,
         email,
         password,
+        gender,
+        phone,
+        profil_img,
       },
     });
   } catch (_err) {
@@ -111,6 +125,7 @@ const deleteUser = async (req, res) => {
       status: 200,
       data: {
         id,
+        message: "success",
       },
     });
   } catch (_err) {

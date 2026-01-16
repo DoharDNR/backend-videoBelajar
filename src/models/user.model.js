@@ -1,10 +1,10 @@
 const connection = require("../db/connection");
 
-const createUser = async (firstName, lastName, email, password) =>
+const createUser = async (fullName, email, gender, phone, password) =>
   new Promise((resolve, reject) => {
     connection.query(
-      "INSERT INTO users VALUES (?,?,?,?,?)",
-      [crypto.randomUUID(), firstName, lastName, email, password],
+      "INSERT INTO users VALUES (?,?,?,?,?,?)",
+      [crypto.randomUUID(), fullName, email, password, gender, phone],
       (_err, rows) => {
         if (_err) reject(_err);
         resolve(rows);
@@ -28,11 +28,19 @@ const getOneUsers = async (id) =>
     });
   });
 
-const updateUsers = async (id, firstName, lastName, email, password) =>
+const updateUsers = async (
+  id,
+  fullName,
+  email,
+  password,
+  gender,
+  phone,
+  profil_img
+) =>
   new Promise((resolve, reject) => {
     connection.query(
-      "UPDATE users SET firstName = ?, lastName = ?, email = ?, password = ? WHERE id = ?",
-      [firstName, lastName, email, password, id],
+      "UPDATE users SET fullName = ?, email = ?, password = ?, gender = ?, phone = ?, profil_img = ? WHERE id = ?",
+      [fullName, email, password, gender, phone, profil_img, id],
       (_err, rows) => {
         if (_err) reject(_err);
         resolve(rows);
