@@ -1,5 +1,9 @@
 const UserModel = require("../models/user.model");
-const { generatePassword, similarAccount } = require("../utils/helper.auth");
+const {
+  generatePassword,
+  similarAccount,
+  generateToken,
+} = require("../utils/helper.auth");
 
 const createUser = async (req, res) => {
   try {
@@ -10,7 +14,12 @@ const createUser = async (req, res) => {
     }
 
     const allUser = await similarAccount(req.body);
-    if (allUser) throw new Error("Nama dan Email telah digunakan!");
+    if (allUser.length > 0) {
+      return res.status(409).json({
+        status: 409,
+        message: "Email telah digunakan!",
+      });
+    }
 
     const password = await generatePassword(Password);
 
@@ -20,21 +29,21 @@ const createUser = async (req, res) => {
       gender,
       phone,
       password,
-      profil_img
+      profil_img,
     );
 
     if (!createUser.affectedRows) {
       throw new Error("Something Is Wrong");
     }
 
-    return res.status(200).json({
-      status: 200,
+    return res.status(201).json({
+      status: 201,
       data: req.body,
     });
   } catch (_err) {
     return res.status(500).json({
       status: 500,
-      message: `Internal Server Error: ${_err.message}`,
+      message: `Internal Server Error: ${_err} in createUser`,
     });
   }
 };
@@ -85,7 +94,7 @@ const updateUser = async (req, res) => {
       password,
       gender,
       phone,
-      profil_img
+      profil_img,
     );
 
     if (!updateUser.affectedRows) {
