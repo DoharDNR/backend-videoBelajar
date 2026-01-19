@@ -4,7 +4,7 @@ require("dotenv").config({ path: path.join(__dirname, "../.env") });
 const express = require("express");
 const router = require("./routes/router");
 const users = require("./routes/users.route");
-const login = require("./routes/auth.router");
+const admin = require("./routes/admin.router");
 const connection = require("./db/connection");
 
 const app = express();
@@ -14,7 +14,7 @@ app.use(express.json());
 
 app.use("/", router);
 app.use("/", users);
-app.use("/", login);
+app.use("/admin", admin);
 
 const PORT = process.env.PORT || 3001;
 if (!PORT) {

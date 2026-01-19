@@ -25,23 +25,11 @@ const generateToken = (getReqBody) => {
   return token;
 };
 
-const similarAccount = async (getRegsiter) =>
-  new Promise((resolve, reject) => {
-    connection.execute(
-      "SELECT id FROM users WHERE email = ? LIMIT 1",
-      [getRegsiter.email],
-      (_err, rows) => {
-        if (_err) reject(_err);
-        resolve(rows);
-      },
-    );
-  });
-
-const matchmaking = async (getLogin) =>
+const findAccount = async (email) =>
   new Promise((resolve, reject) => {
     connection.execute(
       "SELECT id, email, password FROM users WHERE email = ? LIMIT 1",
-      [getLogin.email],
+      [email],
       (_err, rows) => {
         if (_err) reject(_err);
         resolve(rows);
@@ -53,6 +41,5 @@ module.exports = {
   generatePassword,
   comparePassword,
   generateToken,
-  similarAccount,
-  matchmaking,
+  findAccount,
 };
