@@ -137,16 +137,28 @@ const adminEdit = async (req, res) => {
   }
 };
 
-const adminDelete = (req, res) => {
-  const { id } = req.params;
+const adminDelete = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  UserModel.deleteUsers(id)
-    .then((del) =>
-      res
-        .status(200)
-        .json({ status: 200, message: "Berhasil terhapus", data: del }),
-    )
-    .catch((_err) => res.status(500).json({ status: 500, message: _err }));
+    const checkId = await UserModel.getOneUsers(id);
+    if (!checkId.length > 0) {
+      return res.status(200).json("Tidak ada id yang dituju");
+    }
+
+    const deleteUsers = await UserModel.deleteUsers(id);
+    if (!deleteUsers) {
+      return res
+        .status(500)
+        .json("Terjadi kesalahan di UpdateModel.deleteUser");
+    }
+
+    return res
+      .status(200)
+      .json({ message: "User berhasil di hapus", deleteUsers });
+  } catch (_err) {
+    return res.status(500).json("Terjadi Kesalahan di adminDelete");
+  }
 };
 
 module.exports = {

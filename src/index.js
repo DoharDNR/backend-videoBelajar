@@ -5,6 +5,7 @@ const express = require("express");
 const router = require("./routes/router");
 const users = require("./routes/users.route");
 const admin = require("./routes/admin.router");
+const product = require("./routes/product.router");
 const connection = require("./db/connection");
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/", router);
 app.use("/", users);
 app.use("/admin", admin);
+app.use("/product", product);
 
 const PORT = process.env.PORT || 3001;
 if (!PORT) {
