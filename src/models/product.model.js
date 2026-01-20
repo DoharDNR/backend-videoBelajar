@@ -1,10 +1,25 @@
 const connection = require("../db/connection");
 
-const createProduct = async (title, thumbnail, description, price, discount) =>
+const createProduct = async (
+  title,
+  thumbnail,
+  description,
+  price,
+  discount,
+  category,
+) =>
   new Promise((resolve, reject) => {
     connection.query(
-      "INSERT INTO product VALUE (?,?,?,?,?,?)",
-      [crypto.randomUUID(), thumbnail, title, description, price, discount],
+      "INSERT INTO product VALUE (?,?,?,?,?,?,?)",
+      [
+        crypto.randomUUID(),
+        thumbnail,
+        title,
+        description,
+        price,
+        discount,
+        category,
+      ],
       (_err, rows) => {
         if (_err) reject(_err);
         resolve(rows);
@@ -39,11 +54,12 @@ const editProduct = async (
   description,
   price,
   discount,
+  category,
 ) =>
   new Promise((resolve, reject) => {
     connection.query(
-      "UPDATE product SET thumbnail = ?, title = ?, description = ?, price = ?, discount = ? WHERE id = ?",
-      [thumbnail, title, description, price, discount, id],
+      "UPDATE product SET thumbnail = ?, title = ?, description = ?, price = ?, discount = ?, category = ? WHERE id = ?",
+      [thumbnail, title, description, price, discount, category, id],
       (_err, rows) => {
         if (_err) reject(_err);
         resolve(rows);

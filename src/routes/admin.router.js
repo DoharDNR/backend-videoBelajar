@@ -15,6 +15,6 @@ router.get("/login", adminLogin);
 router.get("/users", authVerify, adminUsers);
 router.get("/user/:id", authVerify, adminUser);
 router.put("/edit/:id", authVerify, adminEdit);
-router.delete("/delete/:id", authVerify, adminDelete);
+router.delete("/delete/:id", adminDelete);
 
 module.exports = router;

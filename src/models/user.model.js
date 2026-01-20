@@ -6,11 +6,12 @@ const createUser = async (
   gender,
   phone,
   password,
-  profil_img
+  profil_img,
+  verify_token,
 ) =>
   new Promise((resolve, reject) => {
     connection.query(
-      "INSERT INTO users VALUES (?,?,?,?,?,?,?)",
+      "INSERT INTO users VALUES (?,?,?,?,?,?,?,?)",
       [
         crypto.randomUUID(),
         fullName,
@@ -19,11 +20,12 @@ const createUser = async (
         gender,
         phone,
         profil_img,
+        verify_token,
       ],
       (_err, rows) => {
         if (_err) reject(_err);
         resolve(rows);
-      }
+      },
     );
   });
 
@@ -50,7 +52,7 @@ const updateUsers = async (
   password,
   gender,
   phone,
-  profil_img
+  profil_img,
 ) =>
   new Promise((resolve, reject) => {
     connection.query(
@@ -59,7 +61,7 @@ const updateUsers = async (
       (_err, rows) => {
         if (_err) reject(_err);
         resolve(rows);
-      }
+      },
     );
   });
 

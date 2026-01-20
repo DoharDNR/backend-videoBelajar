@@ -1,9 +1,18 @@
 const ProductModel = require("../models/product.model");
+const { resultFind } = require("../utils/helper.find");
 const productRegister = async (req, res) => {
   try {
-    const { title, temp_thumbnail, description, price, discount } = req.body;
+    const { title, temp_thumbnail, description, price, discount, category } =
+      req.body;
 
-    if (!title && !temp_thumbnail && !description && !price && !discount) {
+    if (
+      !title &&
+      !temp_thumbnail &&
+      !description &&
+      !price &&
+      !discount &&
+      !category
+    ) {
       req.status(400).json({ message: "Pastikan semua sudah terisi!!!" });
     }
 
@@ -13,6 +22,7 @@ const productRegister = async (req, res) => {
       description,
       price,
       discount,
+      category,
     );
 
     if (!createProduct.affectedRows) {
@@ -22,30 +32,46 @@ const productRegister = async (req, res) => {
     return res.status(201).json({
       message: "Data tersimpan!",
       data: req.body,
-      errorr: "tidak ada error",
+      error: "tidak ada error",
     });
   } catch (_err) {
     return console.error("Terjadi masalah di productRegister", _err);
   }
 };
 
-const productAll = (req, res) => {
-  ProductModel.getAllProduct()
-    .then((items) => res.status(200).json({ data: items }))
-    .catch((_err) => res.status(500).json({ message: _err }));
+const productAll = async (req, res) => {
+  try {
+    const { search, category, sorting } = req.query;
+
+    if (!search && !category && !sorting) {
+      const getAllProduct = await ProductModel.getAllProduct();
+      return res.status(200).json(getAllProduct);
+    }
+
+    const searchAndFilter = await resultFind(search, category, sorting);
+
+    return res.status(200).json(searchAndFilter);
+  } catch (_err) {
+    return console.error("Terjadi kesalahan di productAll", _err);
+  }
 };
 
-const productOne = (req, res) => {
-  const { id } = req.params;
-  ProductModel.getOneProduct(id)
-    .then((items) => res.status(200).json({ data: items }))
-    .catch((_err) => res.status(500).json({ message: _err }));
+const productOne = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const getOneProduct = await ProductModel.getOneProduct(id);
+
+    return res.status(200).json({ message: id, data: getOneProduct });
+  } catch (_err) {
+    return console.error("Terjadi kesalahan di productOne", _err);
+  }
 };
 
 const productEdit = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, temp_thumbnail, description, price, discount } = req.body;
+    const { title, temp_thumbnail, description, price, discount, category } =
+      req.body;
 
     if (!title && !temp_thumbnail && !description && !price && !discount) {
       req.status(400).json({ message: "Pastikan semua sudah terisi!!!" });
@@ -58,6 +84,7 @@ const productEdit = async (req, res) => {
       description,
       price,
       discount,
+      category,
     );
     if (!editProduct.affectedRows) {
       throw new Error("Terjadi kesalahan proses edit model");

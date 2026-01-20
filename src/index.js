@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use("/", router);
-app.use("/", users);
+app.use("/users", users);
 app.use("/admin", admin);
 app.use("/product", product);
 
