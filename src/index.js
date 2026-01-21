@@ -7,6 +7,7 @@ const users = require("./routes/users.route");
 const admin = require("./routes/admin.router");
 const product = require("./routes/product.router");
 const connection = require("./db/connection");
+const upload = require("./routes/upload.route");
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use("/", router);
+app.use("/api", upload);
 app.use("/users", users);
 app.use("/admin", admin);
 app.use("/product", product);
